@@ -8,7 +8,7 @@ Globals:
     Timeout: 3
 
 Resources:
-  AthenaClientApp:
+  GARecommenderUxSimulator:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
@@ -19,10 +19,7 @@ Resources:
             - Effect: Allow
               Action:
                 - cloudwatch:*
-                - glue:*
-                - s3:*
                 - kinesis:*
-                - athena:*
                 - ecr:*
               Resource: '*'
     Metadata:

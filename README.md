@@ -17,7 +17,7 @@ Test a single function by invoking it directly with a test event. An event is a 
 Run functions locally and invoke them with the `sam local invoke` command.
 
 ```bash
-$ sam local invoke HelloWorldFunction --event events/event.json
+$ sam local invoke GARecommenderUxSimulator --event events/event.json
 ```
 
 
@@ -50,7 +50,17 @@ aws cloudformation delete-stack --stack-name ga-recommender-ux-simulator
    1. curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}' 
 7. Reference: https://docs.aws.amazon.com/lambda/latest/dg/images-test.html
 
+# Build Docker Image
+
+docker build -t ga-recommender-ux-simulator .
+
+docker run -p 9000:8080 ga-recommender-ux-simulator
+
+
+
 # Push Docker to ECR
+
+
 ### Login to ECR
 
 aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<aws_region>.amazonaws.com
@@ -62,4 +72,5 @@ docker tag <local_docker_image_id> <aws_account_id>.dkr.ecr.<aws_region>.amazona
 docker push <aws_account_id>.dkr.ecr.<aws_region>.amazonaws.com/<my_repository>:<tag>
 
 
+NOTE: JUST USE DOCKER BUILD COMMAND AND PUSH TO ECR
 IDEALLY CI/CD pipeline is required for this manual process. 

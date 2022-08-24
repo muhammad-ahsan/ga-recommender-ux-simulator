@@ -25,5 +25,5 @@ phases:
   build:
     commands:
       - /usr/local/bin/sam build --template-file ${CODEBUILD_SRC_DIR}/template.yaml --region ${AWS_REGION}
-      - /usr/local/bin/sam package --template-file ${CODEBUILD_SRC_DIR}/.aws-sam/build/template.yaml --output-template-file ${CODEBUILD_SRC_DIR}/packaged.yaml --image-repository ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/athena-client-app
-      - /usr/local/bin/sam deploy --template-file ${CODEBUILD_SRC_DIR}/packaged.yaml --stack-name ${PROJECT_NAME}-sam --capabilities CAPABILITY_NAMED_IAM --region ${AWS_REGION} --image-repository ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/athena-client-app
+      - /usr/local/bin/sam package --template-file ${CODEBUILD_SRC_DIR}/.aws-sam/build/template.yaml --output-template-file ${CODEBUILD_SRC_DIR}/packaged.yaml --image-repository ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/ga-recommender-ux-simulator
+      - /usr/local/bin/sam deploy --template-file ${CODEBUILD_SRC_DIR}/packaged.yaml --stack-name ${PROJECT_NAME}-sam --capabilities CAPABILITY_NAMED_IAM --region ${AWS_REGION} --image-repository ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/ga-recommender-ux-simulator
