@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+
+  install:
+    runtime-versions:
+      docker: 20
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+      - wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+      - unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+      - sam --version
+      - ./sam-installation/install --update
+      - /usr/local/bin/sam --version
+      - echo ${AWS_REGION}
+      - echo ${AWS_ACCOUNT_ID}
+      - echo ${PROJECT_NAME}
+      - SAM_CLI_TELEMETRY=0
+  pre_build:
+    commands:
+      - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+      # - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c
+      # - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - /usr/local/bin/sam build --template-file ${CODEBUILD_SRC_DIR}/template.yaml --region ${AWS_REGION}
+      - /usr/local/bin/sam package --template-file ${CODEBUILD_SRC_DIR}/.aws-sam/build/template.yaml --output-template-file ${CODEBUILD_SRC_DIR}/packaged.yaml --image-repository ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/athena-client-app
+      - /usr/local/bin/sam deploy --template-file ${CODEBUILD_SRC_DIR}/packaged.yaml --stack-name ${PROJECT_NAME}-sam --capabilities CAPABILITY_NAMED_IAM --region ${AWS_REGION} --image-repository ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/athena-client-app

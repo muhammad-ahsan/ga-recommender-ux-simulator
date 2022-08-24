@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  python3.8
+  SAM code for ga-recommender-ux-simulator
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  AthenaClientApp:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - cloudwatch:*
+                - glue:*
+                - s3:*
+                - kinesis:*
+                - athena:*
+                - ecr:*
+              Resource: '*'
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./ga-recommender-ux-simulator
+      DockerTag: python3.8-v1
