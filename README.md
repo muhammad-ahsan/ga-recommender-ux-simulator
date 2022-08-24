@@ -38,3 +38,28 @@ To delete the sample application that you created, use the AWS CLI. Assuming you
 ```bash
 aws cloudformation delete-stack --stack-name ux-simulator
 ```
+
+# Amazon Lambda  using Docker
+
+1. Create lambda handler
+2. Use standard requirements.txt for the python project 
+3. Configure Dockerfile using AWS provided base image (including Runtime Interface Emulator RIE)
+4. Build docker container using "docker build -t myfunction:latest ."
+5. Run docker container using "docker run -p 9000:8080  myfunction:latest "
+6. Curl command for local testing 
+   1. curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}' 
+7. Reference: https://docs.aws.amazon.com/lambda/latest/dg/images-test.html
+
+# Push Docker to ECR
+### Login to ECR
+
+aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<aws_region>.amazonaws.com
+
+### Tag docker image
+docker tag <local_docker_image_id> <aws_account_id>.dkr.ecr.<aws_region>.amazonaws.com/<my_repository>:<tag>
+
+### Push docker image
+docker push <aws_account_id>.dkr.ecr.<aws_region>.amazonaws.com/<my_repository>:<tag>
+
+
+IDEALLY CI/CD pipeline is required for this manual process. 
