@@ -11,7 +11,15 @@ def select_recommender():
     Random selection with 50/50 chance
     :return: Name of Recommender
     """
-    return "RecommenderA" if random.randint(1, 10) % 2 == 0 else "RecommenderB"
+
+    index = random.randint(1, 3)
+
+    if index == 1:
+        return "RecommenderA"
+    elif index == 2:
+        return "RecommenderB"
+    else:
+        return "RecommenderC"
 
 
 recommender = select_recommender()
@@ -24,7 +32,13 @@ def simulate_user_click() -> int:
     UI sends an event back to kinesis for tracking purposes.
     :return: Simulated Click Position as Int
     """
-    return random.randint(1, 5) if recommender == "RecommenderB" else random.randint(6, 20)
+    # return random.randint(1, 5) if recommender == "RecommenderB" else random.randint(6, 20)
+    if recommender == "RecommenderB":
+        return random.randint(1, 5)
+    elif recommender == "RecommenderA":
+        return random.randint(6, 20)
+    else:
+        return random.randint(1, 20)
 
 
 def lambda_handler(event, context):
